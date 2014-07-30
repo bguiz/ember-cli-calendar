@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-calendar",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Calendar component for ember-cli apps",
   "main": "index.js",
   "scripts": {
