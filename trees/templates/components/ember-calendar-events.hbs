@@ -1,0 +1,10 @@
+<ul class="events">
+    {{#each event in currentEvents}}
+    <li {{action 'selectEvent' event}} class="alt">
+        <i {{bind-attr class='event.tag'}}></i>
+        <span>{{event.displayTime}}</span>
+        {{event.title}}<br>
+        <em>{{event.location}}</em>
+    </li>
+    {{/each}}
+</ul>

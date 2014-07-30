@@ -1,0 +1,25 @@
+<table cellpadding="0" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each week in grid}}
+        <tr class="ember-calendar-row">
+            {{#each day in week}}
+            <td {{bind-attr class='day.tag'}} {{action 'daySelected' day}}>
+                {{day.dd}}
+                {{#if day.hasEvents}}<i></i>{{/if}}
+            </td>
+            {{/each}}
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
