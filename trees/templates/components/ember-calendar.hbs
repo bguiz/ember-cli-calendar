@@ -1,0 +1,16 @@
+{{ember-calendar-header
+    gridMode=gridMode
+    date=date
+}}
+{{ember-calendar-grid
+    mode=gridMode
+    date=date
+    allEvents=allEvents
+    currentEvents=currentEvents
+}}
+{{#if showEvents}}
+{{ember-calendar-events
+    currentEvents=currentEvents
+    selectEvent='selectEvent'
+}}
+{{/if}}

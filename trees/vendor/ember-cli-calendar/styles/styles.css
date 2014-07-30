@@ -1,0 +1,140 @@
+.ember-calender {
+}
+
+.ember-calender i {
+    display: block;
+    font-style: normal;
+}
+
+.ember-calendar-header {
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    font-size: 20px;
+    line-height: 42px;
+    font-weight: bold;
+    color: #111;
+    width: 312px;
+    height: 55px;
+    top: 41px;
+}
+
+.ember-calendar-header .next:before {
+    content: "";
+    display: block;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid #aaa;
+}
+
+.ember-calendar-header .previous:before {
+    content: "";
+    display: block;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 10px solid #aaa;
+}
+
+.ember-calendar-grid {
+}
+
+.ember-calendar-grid table {
+    width: 312px;
+}
+
+.ember-calendar-grid th {
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+    padding-bottom: 3px;
+}
+
+.ember-calendar-row {
+}
+
+.ember-calendar-row td {
+    width: 14%;
+    border: 1px solid #ddd;
+    border-right: 0;
+    border-bottom: 0;
+    height: 40px;
+    line-height: 42px;
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+}
+.ember-calendar-row td.today {
+    color: #de342d;
+}
+.ember-calendar-row td.past {
+    color: #aaa;
+}
+.ember-calendar-row td.future {
+    color: #999;
+}
+.ember-calendar-row td.current {
+    background: #de342d;
+    color: #fff;
+    border-radius: 100%;
+}
+
+.ember-calendar-row td i {
+    width: 4px;
+    height: 4px;
+    border-radius: 100%;
+    background: #de342d;
+    position: absolute;
+    bottom: 5px;
+    left: 21px;
+}
+.ember-calendar-row td.current i {
+    background: #fff;
+}
+
+.ember-calendar-events {
+    width: 312px;
+    height: auto;
+/*    position: absolute;
+    top: 312px;*/
+    background: #eee;
+    border-top: 1px solid #ddd;
+}
+
+.ember-calendar-events li {
+    list-style: none;
+    padding: 15px 0 15px 0px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: bold;
+    background: #f9f9f9;
+    position: relative;
+}
+.ember-calendar-events li.alt {
+    background: #fff;
+}
+
+.ember-calendar-events li i {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background: #de342d;
+}
+.ember-calendar-events li i.work {
+    background: #4e8dda;
+}
+.ember-calendar-events li i.personal {
+    background: #23be22;
+}
+
+.ember-calendar-events li span {
+    font-size: 10px;
+    width: 60px;
+}
+
+.ember-calendar-events li em {
+    font-size: 11px;
+    display: inline;
+    font-weight: normal;
+    color: #888;
+}
