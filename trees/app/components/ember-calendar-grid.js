@@ -1,38 +1,75 @@
 /*globals Ember, moment*/
 
+import EmberCalendar from './ember-calendar';
+
 var EmberCalendarGrid = Ember.Component.extend({
     classNames: ['ember-calendar-grid'],
-    attributeBindings: ['mode', 'date', 'allEvents'],
+    attributeBindings: ['mode', 'date', 'eventsByDay'],
 
     setup: function() {
-        this.onDateChange();
     }.on('init'),
 
     setupUi: function() {
     }.on('didInsertElement'),
-
-    weekMode: function() {
-        return this.get('mode') === 'week';
-    }.property('mode'),
-
-    monthMode: function() {
-        return this.get('mode') === 'month';
-    }.property('mode'),
 
     today: function() {
         var today = moment();
         return today;
     }.property().volatile(),
 
+    updateGridTags: function() {
+        var grid = this.get('cachedGrid');
+        if (!grid) {
+            return;
+        }
+        var date = this.get('date');
+        var dd = date.date();
+        var mm = date.month();
+        var today = this.get('today');
+        var ddToday = today.date();
+        var mmToday = today.month();
+        grid.forEach(function(week) {
+            week.forEach(function(day) {
+                if (day.dd === dd && day.mm === mm) {
+                    Ember.set(day, 'tag','current');
+                }
+                else if (day.dd === ddToday && day.mm === mmToday) {
+                    Ember.set(day, 'tag','today');
+                }
+                else if (day.mm < mm) {
+                    Ember.set(day, 'tag','past');
+                }
+                else if (day.mm > mm) {
+                    Ember.set(day, 'tag','future');
+                }
+                else {
+                    Ember.set(day, 'tag', null);
+                }
+            });
+        });
+        this.set('cachedGrid', grid);
+    },
+
+    onModeOrEventsByDayChange: function() {
+        this.set('cachedGridStart', null);
+    }.observes('eventsByDay', 'mode'),
+
     grid: function() {
         var mode = this.get('mode');
         var date = this.get('date');
         var today = this.get('today');
+        var eventsByDay = this.get('eventsByDay');
+        var cachedGridStart = this.get('cachedGridStart');
         var grid = [];
         if (mode === 'week') {
             //find first day of this week
             var dayOfWeek = date.day();
-            startOfWeek = date.clone().add('days', 0 - dayOfWeek); //last sunday - http://momentjs.com/docs/#/get-set/day/
+            startOfWeek = date.clone().add('days', 0 - dayOfWeek);
+            if (startOfWeek.isSame(cachedGridStart, 'day')) {
+                this.updateGridTags();
+                return this.get('cachedGrid');
+            }
+            cachedGridStart = startOfWeek.clone();
             var week = [];
             for (var i = 0; i < 7; ++ i) {
                 var day = startOfWeek.clone().add('days', i);
@@ -43,7 +80,7 @@ var EmberCalendarGrid = Ember.Component.extend({
                 else if (day.isSame(today, 'day')) {
                     tag = 'today';
                 }
-                var events = this.findEventsOnDay(day);
+                var events = EmberCalendar.findEventsOnDay(eventsByDay, day);
                 week.push({
                     dd: day.date(),
                     mm: day.month(),
@@ -58,7 +95,12 @@ var EmberCalendarGrid = Ember.Component.extend({
             var startOfMonth = date.clone().add('days', 1 - date.date());
             var month = startOfMonth.month();
             var dayOfWeek = startOfMonth.day();
-            var startOfWeek = startOfMonth.clone().add('days', 0 - dayOfWeek); //last sunday - http://momentjs.com/docs/#/get-set/day/
+            var startOfWeek = startOfMonth.clone().add('days', 0 - dayOfWeek);
+            if (startOfWeek.isSame(cachedGridStart, 'day')) {
+                this.updateGridTags();
+                return this.get('cachedGrid');
+            }
+            cachedGridStart = startOfWeek.clone();
             while (startOfWeek.month() <= month) {
                 var week = [];
                 for (var i = 0; i < 7; ++i) {
@@ -76,7 +118,7 @@ var EmberCalendarGrid = Ember.Component.extend({
                     else if (day.month() > month) {
                         tag = 'future';
                     }
-                    var events = this.findEventsOnDay(day);
+                    var events = EmberCalendar.findEventsOnDay(eventsByDay, day);
                     week.push({
                         dd: day.date(),
                         mm: day.month(),
@@ -89,37 +131,10 @@ var EmberCalendarGrid = Ember.Component.extend({
                 startOfWeek.add('days', 7);
             }
         }
+        this.set('cachedGrid', grid);
+        this.set('cachedGridStart', cachedGridStart);
         return grid;
-    }.property('mode', 'date', 'allEvents'),
-
-    eventsByDay: function() {
-        var events = this.get('allEvents');
-        if (!events) {
-            return {};
-        }
-        var hash = {};
-        events.forEach(function(ev) {
-            var key = moment(ev.start).format('YYYYMMDD');
-            var val = hash[key];
-            if (!val) {
-                val = [];
-            }
-            val.push(ev);
-            hash[key] = val;
-        });
-        return hash;
-    }.property('allEvents', 'allEvents.@each'),
-
-    onDateChange: function() {
-        var date = this.get('date');
-        var currentEvents = this.findEventsOnDay(date);
-        this.set('currentEvents', currentEvents);
-    }.observes('date'),
-
-    findEventsOnDay: function(day) {
-        var eventsByDay = this.get('eventsByDay');
-        return eventsByDay[day.format('YYYYMMDD')] || [];
-    },
+    }.property('mode', 'date', 'eventsByDay'),
 
     actions: {
         daySelected: function(day) {
